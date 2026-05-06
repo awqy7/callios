@@ -78,80 +78,19 @@ function initClock() {
         const mins = String(now.getMinutes()).padStart(2, '0');
         document.getElementById('status-time').innerText = `${hrs}:${mins}`;
     };
+
     updateTime();
-    setInterval(updateTime, 1000 * 30); // atualiza a cada 30 segundos
+    setInterval(updateTime, 1000);
 }
 
-// ================= CONTROLE DE PERSISTÊNCIA =================
-function loadContactsFromStorage() {
-    const saved = localStorage.getItem('icallfake_contacts');
-    if (saved) {
-        state.contacts = JSON.parse(saved);
-    } else {
-        localStorage.setItem('icallfake_contacts', JSON.stringify(state.contacts));
-    }
-}
-
-function saveContactsToStorage() {
-    localStorage.setItem('icallfake_contacts', JSON.stringify(state.contacts));
-}
-
-// ================= NAVEGAÇÃO DE TELAS =================
-function navigateTo(screenId) {
-    const current = document.querySelector('.app-screen.active');
-    if (current) {
-        current.classList.remove('active');
-        current.classList.add('hidden');
-    }
-
-    const next = document.getElementById(screenId);
-    if (next) {
-        next.classList.remove('hidden');
-        next.classList.add('active');
-        state.previousScreen = state.currentScreen;
-        state.currentScreen = screenId;
-    }
-
-    // Gerenciar visibilidade da barra de navegação inferior
-    const navBar = document.getElementById('app-nav-bar');
-    const floatingBtn = document.getElementById('floating-sensor-btn');
-    
-    if (screenId === 'screen-incoming' || screenId === 'screen-active') {
-        navBar.style.display = 'none';
-        floatingBtn.style.display = 'flex'; // Exibe o atalho de proximidade nas chamadas
-    } else {
-        navBar.style.display = 'flex';
-        floatingBtn.style.display = 'none';
-    }
-
-    // Reset de animação da Dynamic Island dependendo da tela
-    const island = document.getElementById('dynamic-island');
-    if (screenId === 'screen-active') {
-        island.classList.add('expanded');
-        document.getElementById('island-status').innerText = 'Chamada ativa • ' + getFormattedDuration();
-    } else if (screenId === 'screen-incoming') {
-        island.classList.add('expanded');
-        document.getElementById('island-status').innerText = 'Recebendo chamada...';
-    } else {
-        island.classList.remove('expanded');
-    }
-}
-
-// ================= RENDERIZAR CONTATOS =================
 function renderContactsList(filter = '') {
-    const container = document.getElementById('contacts-list-container');
+    const container = document.getElementById('contacts-list');
     container.innerHTML = '';
+    
+    const filtered = state.contacts
+        .filter(c => (c.firstName + ' ' + c.lastName).toLowerCase().includes(filter.toLowerCase()))
+        .sort((a, b) => a.firstName.localeCompare(b.firstName));
 
-    // Filtrar contatos
-    const filtered = state.contacts.filter(c => {
-        const full = `${c.firstName} ${c.lastName}`.toLowerCase();
-        return full.includes(filter.toLowerCase()) || c.phone.includes(filter);
-    });
-
-    // Ordenar por primeiro nome
-    filtered.sort((a, b) => a.firstName.localeCompare(b.firstName));
-
-    // Agrupar por letra inicial
     let currentLetter = '';
 
     filtered.forEach(contact => {
@@ -838,6 +777,64 @@ function checkProximityAPISupport() {
             console.warn("Sensor de Proximidade nativo deu erro ao iniciar: ", e);
         }
     } else {
-        debugAPI.innerText = 'Não suportado (Usando emulação)';
+        if (debugAPI) debugAPI.innerText = 'Não suportado (Usando emulação)';
     }
 }
+
+// ================= CONTROLE DE PERSISTÊNCIA =================
+function loadContactsFromStorage() {
+    const saved = localStorage.getItem('icallfake_contacts');
+    if (saved) {
+        state.contacts = JSON.parse(saved);
+    } else {
+        localStorage.setItem('icallfake_contacts', JSON.stringify(state.contacts));
+    }
+}
+
+function saveContactsToStorage() {
+    localStorage.setItem('icallfake_contacts', JSON.stringify(state.contacts));
+}
+
+// ================= NAVEGAÇÃO DE TELAS =================
+function navigateTo(screenId) {
+    const current = document.querySelector('.app-screen.active');
+    if (current) {
+        current.classList.remove('active');
+        current.classList.add('hidden');
+    }
+
+    const next = document.getElementById(screenId);
+    if (next) {
+        next.classList.remove('hidden');
+        next.classList.add('active');
+        state.previousScreen = state.currentScreen;
+        state.currentScreen = screenId;
+    }
+
+    // Gerenciar visibilidade da barra de navegação inferior
+    const navBar = document.getElementById('app-nav-bar');
+    if (navBar) {
+        if (screenId === 'screen-incoming' || screenId === 'screen-active') {
+            navBar.style.display = 'none';
+        } else {
+            navBar.style.display = 'flex';
+        }
+    }
+
+    // Reset de animação da Dynamic Island dependendo da tela
+    const island = document.getElementById('dynamic-island');
+    if (island) {
+        if (screenId === 'screen-active') {
+            island.classList.add('expanded');
+            const status = document.getElementById('island-status');
+            if (status) status.innerText = 'Chamada ativa • ' + getFormattedDuration();
+        } else if (screenId === 'screen-incoming') {
+            island.classList.add('expanded');
+            const status = document.getElementById('island-status');
+            if (status) status.innerText = 'Recebendo chamada...';
+        } else {
+            island.classList.remove('expanded');
+        }
+    }
+}
+
