@@ -1,0 +1,501 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>iCallFake - Chamada Fake Premium iOS</title>
+    <meta name="description" content="Simulador premium de chamada falsa no estilo iPhone com sensor de proximidade ativo.">
+    <!-- Google Fonts para tipografia premium -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <!-- Container principal (Simulador de iPhone para Desktop, tela cheia no Mobile) -->
+    <div class="iphone-container">
+        <!-- Detalhes Físicos do iPhone (visíveis apenas no desktop) -->
+        <div class="iphone-notch-island" id="dynamic-island">
+            <div class="camera-lens"></div>
+            <div class="island-content">
+                <span id="island-status">iCallFake</span>
+            </div>
+        </div>
+        <div class="iphone-speaker"></div>
+        <div class="iphone-status-bar">
+            <div class="status-left">
+                <span id="status-time">09:41</span>
+            </div>
+            <div class="status-right">
+                <!-- Ícone de Sinal -->
+                <svg class="status-icon" viewBox="0 0 24 24" width="17" height="17">
+                    <rect x="2" y="16" width="3" height="4" rx="1" fill="currentColor"/>
+                    <rect x="7" y="12" width="3" height="8" rx="1" fill="currentColor"/>
+                    <rect x="12" y="8" width="3" height="12" rx="1" fill="currentColor"/>
+                    <rect x="17" y="4" width="3" height="16" rx="1" fill="currentColor"/>
+                </svg>
+                <!-- Ícone de Wifi -->
+                <svg class="status-icon" viewBox="0 0 24 24" width="16" height="16">
+                    <path d="M12 21a2 2 0 1 1-4 0 2 2 0 0 1 4 0Z" fill="currentColor"/>
+                    <path d="M4.828 13.828a10 10 0 0 1 14.344 0" stroke="currentColor" stroke-width="2" stroke-linecap="round" fill="none"/>
+                    <path d="M1.343 10.343a15 15 0 0 1 21.314 0" stroke="currentColor" stroke-width="2" stroke-linecap="round" fill="none"/>
+                </svg>
+                <!-- Ícone de Bateria -->
+                <div class="battery-icon">
+                    <div class="battery-body"></div>
+                    <div class="battery-tip"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- TELA DE APAGAR (SENSOR DE PROXIMIDADE) -->
+        <div class="proximity-blackout" id="blackout-screen">
+            <div class="blackout-hint">Tela Apagada (Orelha detectada)<br><span>Toque ou afaste para acender</span></div>
+        </div>
+
+        <!-- ================= TELA 1: DIALER (TECLADO) ================= -->
+        <div class="app-screen active" id="screen-dialer">
+            <div class="dialer-display">
+                <div class="dialed-number" id="dialed-number-text"></div>
+                <button class="add-contact-btn hidden" id="add-to-contacts-btn">Adicionar Número</button>
+            </div>
+
+            <div class="dialer-keypad">
+                <div class="keypad-row">
+                    <button class="keypad-btn" data-value="1"><span>1</span><span class="sub"> </span></button>
+                    <button class="keypad-btn" data-value="2"><span>2</span><span class="sub">A B C</span></button>
+                    <button class="keypad-btn" data-value="3"><span>3</span><span class="sub">D E F</span></button>
+                </div>
+                <div class="keypad-row">
+                    <button class="keypad-btn" data-value="4"><span>4</span><span class="sub">G H I</span></button>
+                    <button class="keypad-btn" data-value="5"><span>5</span><span class="sub">J K L</span></button>
+                    <button class="keypad-btn" data-value="6"><span>6</span><span class="sub">M N O</span></button>
+                </div>
+                <div class="keypad-row">
+                    <button class="keypad-btn" data-value="7"><span>7</span><span class="sub">P Q R S</span></button>
+                    <button class="keypad-btn" data-value="8"><span>8</span><span class="sub">T U V</span></button>
+                    <button class="keypad-btn" data-value="9"><span>9</span><span class="sub">W X Y Z</span></button>
+                </div>
+                <div class="keypad-row">
+                    <button class="keypad-btn spec" data-value="*"><span>*</span><span class="sub"></span></button>
+                    <button class="keypad-btn" data-value="0"><span>0</span><span class="sub">+</span></button>
+                    <button class="keypad-btn spec" data-value="#"><span>#</span><span class="sub"></span></button>
+                </div>
+                <div class="keypad-row action-row">
+                    <div class="placeholder-btn"></div>
+                    <button class="call-btn-green" id="dialer-call-btn" aria-label="Ligar">
+                        <svg viewBox="0 0 24 24" width="28" height="28" fill="currentColor">
+                            <path d="M6.62 10.79a15.15 15.15 0 0 0 6.59 6.59l2.2-2.2a1 1 0 0 1 1.11-.27c1.12.44 2.33.69 3.57.69a1 1 0 0 1 1 1V20a1 1 0 0 1-1 1A17 17 0 0 1 3 4a1 1 0 0 1 1-1h3.5a1 1 0 0 1 1 1c0 1.25.25 2.45.69 3.57a1 1 0 0 1-.26 1.12l-2.2 2.2Z"/>
+                        </svg>
+                    </button>
+                    <button class="backspace-btn hidden" id="backspace-btn" aria-label="Apagar">
+                        <svg viewBox="0 0 24 24" width="24" height="24" fill="currentColor">
+                            <path d="M22 3H7c-.69 0-1.23.35-1.59.88L0 12l5.41 8.11c.36.53.9.89 1.59.89h15c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2Zm-3 12.59L17.59 17 14 13.41 10.41 17 9 15.59 12.59 12 9 8.41 10.41 7 14 10.59 17.59 7 19 8.41 15.41 12 19 15.59Z"/>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- ================= TELA 2: CONTACTS (CONTATOS) ================= -->
+        <div class="app-screen hidden" id="screen-contacts">
+            <div class="screen-header">
+                <h1>Contatos</h1>
+                <button class="icon-btn-add" id="open-add-contact-modal" aria-label="Adicionar Contato">
+                    <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2">
+                        <line x1="12" y1="5" x2="12" y2="19"></line>
+                        <line x1="5" y1="12" x2="19" y2="12"></line>
+                    </svg>
+                </button>
+            </div>
+            
+            <div class="search-bar-container">
+                <div class="search-bar">
+                    <svg class="search-icon" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="11" cy="11" r="8"></circle>
+                        <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                    </svg>
+                    <input type="text" placeholder="Buscar" id="contacts-search">
+                </div>
+            </div>
+
+            <div class="my-card">
+                <div class="my-avatar">CF</div>
+                <div class="my-details">
+                    <h3>Configurar Chamada</h3>
+                    <p>Defina o áudio de voz, delay e sensor</p>
+                </div>
+                <button class="settings-gear-btn" id="open-settings-btn" aria-label="Configurações">
+                    <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="3"></circle>
+                        <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
+                    </svg>
+                </button>
+            </div>
+
+            <div class="contacts-list" id="contacts-list-container">
+                <!-- Injetado dinamicamente via JS -->
+            </div>
+        </div>
+
+        <!-- ================= TELA 3: CONTACT DETAILS (DETALHES DO CONTATO) ================= -->
+        <div class="app-screen hidden" id="screen-contact-details">
+            <div class="back-nav">
+                <button class="back-btn" id="contact-details-back-btn">
+                    <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                        <polyline points="15 18 9 12 15 6"></polyline>
+                    </svg>
+                    <span>Contatos</span>
+                </button>
+            </div>
+
+            <div class="contact-card-header">
+                <div class="contact-detail-avatar" id="detail-avatar">M</div>
+                <h2 id="detail-name">Mãe</h2>
+                <p id="detail-phone">celular</p>
+            </div>
+
+            <div class="quick-actions">
+                <button class="quick-action-btn" id="trigger-call-now-btn">
+                    <div class="action-icon circle green">
+                        <svg viewBox="0 0 24 24" width="22" height="22" fill="currentColor">
+                            <path d="M6.62 10.79a15.15 15.15 0 0 0 6.59 6.59l2.2-2.2a1 1 0 0 1 1.11-.27c1.12.44 2.33.69 3.57.69a1 1 0 0 1 1 1V20a1 1 0 0 1-1 1A17 17 0 0 1 3 4a1 1 0 0 1 1-1h3.5a1 1 0 0 1 1 1c0 1.25.25 2.45.69 3.57a1 1 0 0 1-.26 1.12l-2.2 2.2Z"/>
+                        </svg>
+                    </div>
+                    <span>Ligar Agora</span>
+                </button>
+            </div>
+
+            <div class="fake-call-options-box">
+                <h3>Agendar Chamada Falsa</h3>
+                <p class="subtitle">Ótimo para sair de situações embaraçosas com discrição.</p>
+                <div class="delay-buttons-grid">
+                    <button class="delay-btn" data-delay="5">5 Segundos</button>
+                    <button class="delay-btn" data-delay="10">10 Segundos</button>
+                    <button class="delay-btn" data-delay="30">30 Segundos</button>
+                    <button class="delay-btn" data-delay="60">1 Minuto</button>
+                    <button class="delay-btn" data-delay="300">5 Minutos</button>
+                </div>
+
+                <div class="audio-selection-box">
+                    <label for="fake-voice-select">Voz Simulada na Chamada:</label>
+                    <select id="fake-voice-select" class="ios-select">
+                        <option value="none">Nenhuma (Silêncio)</option>
+                        <option value="boss">Chefe Urgente</option>
+                        <option value="mom">Mãe Preocupada</option>
+                        <option value="friend">Amigo Convidando</option>
+                        <option value="delivery">Entregador de Encomenda</option>
+                        <option value="tts">Robô (Texto para Fala)</option>
+                    </select>
+                </div>
+
+                <div class="tts-custom-box hidden" id="tts-input-container">
+                    <label for="tts-text-input">Texto que a Voz vai falar:</label>
+                    <input type="text" id="tts-text-input" placeholder="Ex: Oi, preciso de você aqui na sala agora!" class="ios-input" value="Oi, você está ocupado? Preciso de uma ajuda urgente agora!">
+                </div>
+            </div>
+        </div>
+
+        <!-- ================= TELA 4: INCOMING CALL (CHAMADA RECEBIDA) ================= -->
+        <div class="app-screen hidden" id="screen-incoming">
+            <div class="incoming-bg-blur" id="incoming-blur-bg"></div>
+            <div class="incoming-overlay"></div>
+            
+            <div class="incoming-header">
+                <span class="call-type">celular</span>
+                <h1 class="caller-name" id="incoming-caller-name">Mãe</h1>
+                <span class="incoming-state-text" id="incoming-state-subtext">Chamada de voz do iPhone...</span>
+            </div>
+
+            <!-- Botões Rápidos acima do Slide -->
+            <div class="incoming-utilities">
+                <div class="util-button">
+                    <div class="util-icon">
+                        <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor">
+                            <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2Zm1 15h-2v-6h2v6Zm0-8h-2V7h2v2Z"/>
+                        </svg>
+                    </div>
+                    <span>Lembre-me</span>
+                </div>
+                <div class="util-button">
+                    <div class="util-icon">
+                        <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor">
+                            <path d="M20 2H4c-1.1 0-1.99.9-1.99 2L2 22l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2Zm-2 12H6v-2h12v2Zm0-3H6V9h12v2Zm0-3H6V6h12v2Z"/>
+                        </svg>
+                    </div>
+                    <span>Mensagem</span>
+                </div>
+            </div>
+
+            <!-- Slider / Controle de Aceitar Clássico do iPhone -->
+            <div class="incoming-actions">
+                <div class="action-decline-box">
+                    <button class="call-action-btn red" id="incoming-decline-btn" aria-label="Recusar">
+                        <svg viewBox="0 0 24 24" width="30" height="30" fill="currentColor">
+                            <path d="M6.62 10.79a15.15 15.15 0 0 0 6.59 6.59l2.2-2.2a1 1 0 0 1 1.11-.27c1.12.44 2.33.69 3.57.69a1 1 0 0 1 1 1V20a1 1 0 0 1-1 1A17 17 0 0 1 3 4a1 1 0 0 1 1-1h3.5a1 1 0 0 1 1 1c0 1.25.25 2.45.69 3.57a1 1 0 0 1-.26 1.12l-2.2 2.2Z" style="transform: rotate(135deg); transform-origin: center;"/>
+                        </svg>
+                    </button>
+                    <span>Recusar</span>
+                </div>
+
+                <!-- Botão Atender de Clique Direto (Usado em telas menores/fallbacks ou junto com o slide) -->
+                <div class="action-accept-box">
+                    <button class="call-action-btn green" id="incoming-accept-btn" aria-label="Aceitar">
+                        <svg viewBox="0 0 24 24" width="30" height="30" fill="currentColor">
+                            <path d="M6.62 10.79a15.15 15.15 0 0 0 6.59 6.59l2.2-2.2a1 1 0 0 1 1.11-.27c1.12.44 2.33.69 3.57.69a1 1 0 0 1 1 1V20a1 1 0 0 1-1 1A17 17 0 0 1 3 4a1 1 0 0 1 1-1h3.5a1 1 0 0 1 1 1c0 1.25.25 2.45.69 3.57a1 1 0 0 1-.26 1.12l-2.2 2.2Z"/>
+                        </svg>
+                    </button>
+                    <span>Aceitar</span>
+                </div>
+
+                <!-- SLIDE TO ANSWER (Deslize para Atender) - Altamente realista -->
+                <div class="slide-to-answer-container" id="slide-container">
+                    <div class="slide-track">
+                        <div class="slide-button" id="slide-handle">
+                            <svg viewBox="0 0 24 24" width="28" height="28" fill="#30D158">
+                                <path d="M6.62 10.79a15.15 15.15 0 0 0 6.59 6.59l2.2-2.2a1 1 0 0 1 1.11-.27c1.12.44 2.33.69 3.57.69a1 1 0 0 1 1 1V20a1 1 0 0 1-1 1A17 17 0 0 1 3 4a1 1 0 0 1 1-1h3.5a1 1 0 0 1 1 1c0 1.25.25 2.45.69 3.57a1 1 0 0 1-.26 1.12l-2.2 2.2Z"/>
+                            </svg>
+                        </div>
+                        <div class="slide-text">Deslize para atender</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ================= TELA 5: ACTIVE CALL (EM CHAMADA) ================= -->
+        <div class="app-screen hidden" id="screen-active">
+            <div class="active-bg-blur" id="active-blur-bg"></div>
+            <div class="active-overlay"></div>
+
+            <div class="active-call-header">
+                <h1 id="active-caller-name">Mãe</h1>
+                <span class="call-timer" id="call-timer-text">00:00</span>
+                <span class="speaker-state-tag" id="speaker-tag">alto-falante ativado</span>
+            </div>
+
+            <!-- Grade de 6 Botões do iPhone -->
+            <div class="active-call-grid">
+                <button class="call-grid-btn" id="active-btn-mute">
+                    <div class="grid-icon-circle">
+                        <!-- Ícone Mudo -->
+                        <svg viewBox="0 0 24 24" width="26" height="26" fill="currentColor">
+                            <path d="M12 14c1.66 0 3-1.34 3-3V5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.34 3 3 3Zm-1 9h2c3.31 0 6-2.69 6-6h-1.7c0 2.4-1.9 4.3-4.3 4.3h-2c-2.4 0-4.3-1.9-4.3-4.3H3c0 3.31 2.69 6 6 6h2v3Z"/>
+                        </svg>
+                    </div>
+                    <span>Mudo</span>
+                </button>
+                <button class="call-grid-btn" id="active-btn-keypad">
+                    <div class="grid-icon-circle">
+                        <!-- Ícone Teclado -->
+                        <svg viewBox="0 0 24 24" width="26" height="26" fill="currentColor">
+                            <circle cx="5" cy="5" r="2.5"></circle>
+                            <circle cx="12" cy="5" r="2.5"></circle>
+                            <circle cx="19" cy="5" r="2.5"></circle>
+                            <circle cx="5" cy="12" r="2.5"></circle>
+                            <circle cx="12" cy="12" r="2.5"></circle>
+                            <circle cx="19" cy="12" r="2.5"></circle>
+                            <circle cx="5" cy="19" r="2.5"></circle>
+                            <circle cx="12" cy="19" r="2.5"></circle>
+                            <circle cx="19" cy="19" r="2.5"></circle>
+                        </svg>
+                    </div>
+                    <span>Teclado</span>
+                </button>
+                <button class="call-grid-btn" id="active-btn-speaker">
+                    <div class="grid-icon-circle">
+                        <!-- Ícone Alto-falante -->
+                        <svg viewBox="0 0 24 24" width="26" height="26" fill="currentColor">
+                            <path d="M14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77Zm-3-1.23L5 7H1v10h4l5 5V2Zm1.5 11c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02Z"/>
+                        </svg>
+                    </div>
+                    <span>Alto-falante</span>
+                </button>
+                <button class="call-grid-btn disabled">
+                    <div class="grid-icon-circle">
+                        <!-- Ícone Mais Chamada -->
+                        <svg viewBox="0 0 24 24" width="26" height="26" fill="currentColor">
+                            <path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2Z"/>
+                        </svg>
+                    </div>
+                    <span>Adicionar</span>
+                </button>
+                <button class="call-grid-btn disabled">
+                    <div class="grid-icon-circle">
+                        <!-- Ícone FaceTime -->
+                        <svg viewBox="0 0 24 24" width="26" height="26" fill="currentColor">
+                            <path d="M17 10.5V7c0-.55-.45-1-1-1H4c-.55 0-1 .45-1 1v10c0 .55.45 1 1 1h12c.55 0 1-.45 1-1v-3.5l4 4v-11l-4 4Z"/>
+                        </svg>
+                    </div>
+                    <span>FaceTime</span>
+                </button>
+                <button class="call-grid-btn" id="active-btn-contacts">
+                    <div class="grid-icon-circle">
+                        <!-- Ícone Contatos -->
+                        <svg viewBox="0 0 24 24" width="26" height="26" fill="currentColor">
+                            <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4Zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4Z"/>
+                        </svg>
+                    </div>
+                    <span>Contatos</span>
+                </button>
+            </div>
+
+            <!-- Botão de Desligar Vermelho -->
+            <div class="active-call-actions">
+                <button class="hangup-btn-red" id="active-hangup-btn" aria-label="Desligar">
+                    <svg viewBox="0 0 24 24" width="32" height="32" fill="currentColor">
+                        <path d="M6.62 10.79a15.15 15.15 0 0 0 6.59 6.59l2.2-2.2a1 1 0 0 1 1.11-.27c1.12.44 2.33.69 3.57.69a1 1 0 0 1 1 1V20a1 1 0 0 1-1 1A17 17 0 0 1 3 4a1 1 0 0 1 1-1h3.5a1 1 0 0 1 1 1c0 1.25.25 2.45.69 3.57a1 1 0 0 1-.26 1.12l-2.2 2.2Z" style="transform: rotate(135deg); transform-origin: center;"/>
+                    </svg>
+                </button>
+            </div>
+        </div>
+
+        <!-- ================= MODAL: ADICIONAR / EDITAR CONTATO ================= -->
+        <div class="ios-modal hidden" id="modal-add-contact">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button class="modal-cancel" id="btn-cancel-modal">Cancelar</button>
+                    <h2>Novo Contato</h2>
+                    <button class="modal-save" id="btn-save-modal">Salvar</button>
+                </div>
+                <div class="modal-body">
+                    <div class="avatar-creator">
+                        <div class="avatar-preview" id="modal-avatar-preview">👤</div>
+                        <input type="color" id="avatar-color-picker" value="#30D158" title="Cor do Avatar">
+                    </div>
+                    <div class="modal-fields">
+                        <div class="input-group">
+                            <input type="text" id="contact-first-name" placeholder="Nome" required class="ios-input">
+                        </div>
+                        <div class="input-group">
+                            <input type="text" id="contact-last-name" placeholder="Sobrenome" class="ios-input">
+                        </div>
+                        <div class="input-group">
+                            <input type="tel" id="contact-phone" placeholder="Celular ou Número" class="ios-input">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ================= MODAL: CONFIGURAÇÕES E SENSORES ================= -->
+        <div class="ios-modal hidden" id="modal-settings">
+            <div class="modal-content full-modal">
+                <div class="modal-header">
+                    <h2>Ajustes</h2>
+                    <button class="modal-save" id="btn-close-settings">OK</button>
+                </div>
+                <div class="modal-body">
+                    <div class="settings-section">
+                        <h3>Simulador de Proximidade</h3>
+                        <p class="section-desc">Escolha como simular a tela apagando ao encostar o iPhone na orelha:</p>
+                        
+                        <div class="toggle-option">
+                            <div class="option-info">
+                                <strong>Giroscópio / Inclinação</strong>
+                                <p>Apaga se inclinar o celular na vertical (>75°)</p>
+                            </div>
+                            <label class="ios-switch">
+                                <input type="checkbox" id="setting-gyro" checked>
+                                <span class="slider"></span>
+                            </label>
+                        </div>
+
+                        <div class="toggle-option">
+                            <div class="option-info">
+                                <strong>Toque Corporal Completo</strong>
+                                <p>Toque em qualquer lugar na tela de chamada para apagar</p>
+                            </div>
+                            <label class="ios-switch">
+                                <input type="checkbox" id="setting-touch" checked>
+                                <span class="slider"></span>
+                            </label>
+                        </div>
+
+                        <div class="toggle-option">
+                            <div class="option-info">
+                                <strong>Dynamic Island Hover (Desktop)</strong>
+                                <p>Passe o mouse no topo (Dynamic Island) para apagar</p>
+                            </div>
+                            <label class="ios-switch">
+                                <input type="checkbox" id="setting-hover" checked>
+                                <span class="slider"></span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="settings-section">
+                        <h3>Efeitos Sonoros</h3>
+                        <div class="toggle-option">
+                            <div class="option-info">
+                                <strong>Som de Toque (Ringtone)</strong>
+                                <p>Toca o toque original do iPhone</p>
+                            </div>
+                            <label class="ios-switch">
+                                <input type="checkbox" id="setting-ringtone" checked>
+                                <span class="slider"></span>
+                            </label>
+                        </div>
+                        <div class="toggle-option">
+                            <div class="option-info">
+                                <strong>Sons do Teclado (DTMF)</strong>
+                                <p>Toca tons reais ao discar os botões</p>
+                            </div>
+                            <label class="ios-switch">
+                                <input type="checkbox" id="setting-dtmf" checked>
+                                <span class="slider"></span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="settings-section dev-section">
+                        <h3>Informações de Depuração</h3>
+                        <div class="debug-value">
+                            <span>Inclinômetro (Beta):</span>
+                            <span id="debug-gyro-val">0°</span>
+                        </div>
+                        <div class="debug-value">
+                            <span>Suporte Proximity API:</span>
+                            <span id="debug-proximity-api">Não suportado</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ================= BARRA DE NAVEGAÇÃO INFERIOR ================= -->
+        <nav class="iphone-nav-bar" id="app-nav-bar">
+            <button class="nav-tab" data-target="screen-dialer" id="tab-dialer">
+                <svg viewBox="0 0 24 24" fill="currentColor">
+                    <circle cx="5" cy="5" r="2"></circle>
+                    <circle cx="12" cy="5" r="2"></circle>
+                    <circle cx="19" cy="5" r="2"></circle>
+                    <circle cx="5" cy="12" r="2"></circle>
+                    <circle cx="12" cy="12" r="2"></circle>
+                    <circle cx="19" cy="12" r="2"></circle>
+                    <circle cx="5" cy="19" r="2"></circle>
+                    <circle cx="12" cy="19" r="2"></circle>
+                    <circle cx="19" cy="19" r="2"></circle>
+                </svg>
+                <span>Teclado</span>
+            </button>
+            <button class="nav-tab active" data-target="screen-contacts" id="tab-contacts">
+                <svg viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4Zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4Z"/>
+                </svg>
+                <span>Contatos</span>
+            </button>
+        </nav>
+
+        <!-- Botão Flutuante de Atalho para Sensor de Proximidade (Excelente UX em dispositivos incompatíveis) -->
+        <button class="floating-sensor-trigger" id="floating-sensor-btn" title="Simular Orelha / Sensor Proximidade">
+            👂 Proximidade
+        </button>
+
+        <!-- Barra Inicializadora do iOS (Home Indicator) -->
+        <div class="iphone-home-indicator"></div>
+    </div>
+
+    <!-- Scripts do App -->
+    <script src="app.js"></script>
+</body>
+</html>
